@@ -10,18 +10,40 @@ function handleOnAuthenticated(rtmStartData) {
 
 
 function handleOnMessage(message) {
-  nlp.ask(message.text, (err, res) => {
-    if(err) {
-      console.log(err);
-      return;
-    }
 
-    rtm.sendMessage('ბოდიშიიიი', 'D3PUDB3FB', () => {
+  if(message.text && message.text.toLowerCase().includes('ccbot')) {
+    nlp.ask(message.text, (err, res) => {
+      if(err) {
+        console.log(err);
+        return;
+      }
+
+      try {
+        if(!res.intent || !res.intent[0] || !res.intent[0].value) {
+          throw new Error('Could not extract intent.' + res.intent[0].value);
+        }
+
+        const intent = require('./intents/' + res.intent[0].value + 'Intent');
+
+        intent.process(res, (err, response) => {
+          if(err) {
+            console.log(err.message);
+            return
+          }
+
+          return rtm.sendMessage(response, message.channel);
+        });
+
+      } catch(err) {
+        console.log(err);
+        console.log(res);
+        rtm.sendMessage('Sorry, I don\'t know what you are talking about', message.channel);
+      }
+
 
     });
-  });
+  }
 
- 
 }
 
 function addAuthenticatedHandler(rtm, handler) {
