@@ -12,17 +12,23 @@ module.exports.process = function process(intentData, cb) {
     return cb(new Error('to whom should I giff?'));
   }
 
+  let tag = ``;
 
-  request.get('http://api.giphy.com/v1/gifs/random')
-    .query({'api_key': 'dc6zaTOxFJmzC'})
+  if(intentData.search_query) {
+    tag = intentData.search_query[0].value;
+  }
+
+  request.get(`http://localhost:3010/service/gif/${tag}`)
     .end((err, res) => {
-      if(err) return cb(err);
+      if(err || res.statusCode != 200 || !res.body.url) {
 
-      if(res.statusCode != 200) return cb('Expected Status 200 but got ' + res.statusCode);
+        return cb(false, `I had problem with giffing you`);
+      }
 
+      return cb(null, `პირველი გიფი უპროცენტოა:
+      ${res.body.url}`);
+  });
 
-      return cb(false, res.body.data.image_url);
-    });
 
 
   
