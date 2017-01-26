@@ -6,7 +6,7 @@ const service = express();
 
 
 
-service.get('/service/gif/:tag?', (req, res, next) => {
+service.get('/service/giff/:tag?', (req, res, next) => {
   const tag = req.params.tag;
 
   request.get('http://api.giphy.com/v1/gifs/random')

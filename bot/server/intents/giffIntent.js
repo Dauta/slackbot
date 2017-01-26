@@ -2,7 +2,7 @@
 
 const request = require('superagent');
 
-module.exports.process = function process(intentData, cb) {
+module.exports.process = function process(intentData, registry, cb) {
   console.log(intentData);
   if(intentData.intent[0].value !== 'giff') {
     return cb(new Error(`Expected giff intent, got ${intentData.intent[0].value}`));
@@ -18,10 +18,13 @@ module.exports.process = function process(intentData, cb) {
     tag = intentData.search_query[0].value;
   }
 
-  request.get(`http://localhost:3010/service/gif/${tag}`)
+  const service = registry.get('giff');
+  if(!service) return cb(false, 'No service avaliable');
+
+  request.get(`http://${service.ip}:${service.port}/service/giff/${tag}`)
     .end((err, res) => {
       if(err || res.statusCode != 200 || !res.body.url) {
-
+        console.log(err);
         return cb(false, `I had problem with giffing you`);
       }
 
