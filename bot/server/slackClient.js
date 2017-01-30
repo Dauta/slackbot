@@ -12,7 +12,9 @@ function handleOnAuthenticated(rtmStartData) {
 
 function handleOnMessage(message) {
 
+  // rtm.sendMessage('ხიწვი შემერჭოოო', message.channel);
   if(message.text && message.text.toLowerCase().includes('ccbot')) {
+
     nlp.ask(message.text, (err, res) => {
       if(err) {
         console.log(err);
