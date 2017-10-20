@@ -25,7 +25,7 @@ module.exports.process = function process(intentData, registry, cb) {
     .end((err, res) => {
       if(err || res.statusCode != 200 || !res.body.url) {
         console.log(err);
-        return cb(false, `I had problem with giffing you`);
+        return cb(false, `I had a problem with giffing you`);
       }
 
       return cb(null, `პირველი გიფი უპროცენტოა:
